@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HON Miner</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Poppins',sans-serif;background:#090909;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.wrap{max-width:420px;width:100%;padding:20px}
+.card{background:#111;border:1px solid rgba(255,179,0,0.2);border-radius:24px;padding:35px 30px;text-align:center}
+.logo{font-size:2.5em;margin-bottom:10px}
+h1{font-size:1.5em;font-weight:700;background:linear-gradient(135deg,#FFB300,#FF6600);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:5px}
+.sub{color:#555;font-size:0.85em;margin-bottom:30px}
+.balance-box{background:#0a0a0a;border:1px solid rgba(255,179,0,0.1);border-radius:16px;padding:20px;margin-bottom:25px}
+.balance-label{color:#555;font-size:0.75em;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.balance-val{font-size:2.5em;font-weight:700;color:#FFB300}
+.balance-unit{font-size:0.85em;color:#666;margin-top:3px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:25px}
+.stat{background:#0a0a0a;border:1px solid rgba(255,179,0,0.08);border-radius:12px;padding:15px}
+.stat-val{font-size:1.3em;font-weight:600;color:#FFB300}
+.stat-lbl{font-size:0.7em;color:#555;margin-top:3px}
+.mine-btn{width:100%;padding:18px;border-radius:50px;font-size:1.1em;font-weight:700;cursor:pointer;border:none;font-family:'Poppins',sans-serif;transition:all 0.3s;margin-bottom:15px}
+.btn-active{background:linear-gradient(135deg,#FFB300,#FF8C00);color:#000;box-shadow:0 0 30px rgba(255,179,0,0.4)}
+.btn-active:hover{box-shadow:0 0 50px rgba(255,179,0,0.7);transform:translateY(-2px)}
+.btn-mining{background:#1a1a1a;color:#FFB300;border:2px solid #FFB300;animation:pulse-btn 1.5s infinite}
+@keyframes pulse-btn{0%,100%{box-shadow:0 0 0 0 rgba(255,179,0,0.4)}50%{box-shadow:0 0 0 15px rgba(255,179,0,0)}}
+.btn-disabled{background:#1a1a1a;color:#333;cursor:not-allowed}
+.ring{width:50px;height:50px;border:3px solid rgba(255,179,0,0.1);border-top:3px solid #FFB300;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;display:none}
+@keyframes spin{100%{transform:rotate(360deg)}}
+.status{font-size:0.82em;color:#555;margin-bottom:20px;min-height:20px}
+.status.ok{color:#4ade80}
+.status.err{color:#f87171}
+.status.inf{color:#FFB300}
+.log{background:#0a0a0a;border-radius:10px;padding:12px;max-height:150px;overflow-y:auto;text-align:left;margin-bottom:15px}
+.log-item{font-size:0.73em;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+.log-item.ok{color:#4ade80}
+.log-item.inf{color:#FFB300}
+.log-item.dim{color:#333}
+.login-box{text-align:center}
+.login-btn{width:100%;padding:15px;border-radius:50px;font-size:1em;font-weight:600;cursor:pointer;border:none;font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#FFB300,#FF8C00);color:#000;margin-top:20px}
+.email-inp{width:100%;background:#0a0a0a;border:1px solid rgba(255,179,0,0.2);border-radius:10px;padding:12px 15px;color:#fff;font-family:'Poppins',sans-serif;font-size:0.9em;outline:none;margin-bottom:10px}
+.links{display:flex;justify-content:center;gap:15px;margin-top:15px}
+.links a{color:#555;font-size:0.75em;text-decoration:none}
+.links a:hover{color:#FFB300}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card" id="loginCard">
+    <div class="logo">🪙</div>
+    <h1>HON Miner</h1>
+    <p class="sub">Mine HON coins with one click</p>
+    <div class="login-box">
+      <p style="color:#666;font-size:0.85em;margin-bottom:15px">Enter your email to start mining</p>
+      <input class="email-inp" id="emailInp" type="email" placeholder="your@email.com">
+      <button class="login-btn" onclick="loginUser()">🚀 Start Mining</button>
+    </div>
+    <div class="links">
+      <a href="https://hon-digital-currency.vercel.app">← Back to App</a>
+    </div>
+  </div>
+
+  <div class="card" id="miningCard" style="display:none">
+    <div class="logo">⛏️</div>
+    <h1>HON Miner</h1>
+    <p class="sub" id="userEmail">—</p>
+
+    <div class="balance-box">
+      <div class="balance-label">Mining Balance</div>
+      <div class="balance-val" id="balVal">0.00</div>
+      <div class="balance-unit">HON Earned by Mining</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-val" id="blocksVal">0</div><div class="stat-lbl">Blocks Mined</div></div>
+      <div class="stat"><div class="stat-val" id="sessionVal">0</div><div class="stat-lbl">This Session</div></div>
+    </div>
+
+    <div class="ring" id="ring"></div>
+    <p class="status" id="statusTxt">Ready to mine!</p>
+
+    <button class="mine-btn btn-active" id="mineBtn" onclick="toggleMining()">⛏️ Start Mining</button>
+
+    <div class="log" id="logBox">
+      <div class="log-item dim">// Mining log will appear here...</div>
+    </div>
+
+    <div class="links">
+      <a href="https://hon-digital-currency.vercel.app">← Dashboard</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://pctlqnityusjxlicreax.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjdGxxbml0eXVzanhsaWNyZWF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwODg2NDMsImV4cCI6MjA5NjY2NDY0M30.nlo0Pzn_KoaidWgDCp9pXbL7ILoQpd9SER1C_3p-9gw';
+const HON_PER_BLOCK = 1;
+const MINE_INTERVAL = 10000;
+
+let miningTimer = null;
+let sessionBlocks = 0;
+let totalBlocks = 0;
+let userId = null;
+let userEmail = null;
+let miningBalance = 0;
+
+function addLog(msg, type='dim'){
+  const b = document.getElementById('logBox');
+  const d = document.createElement('div');
+  d.className = 'log-item ' + type;
+  d.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+  b.insertBefore(d, b.firstChild);
+  if(b.children.length > 30) b.removeChild(b.lastChild);
+}
+
+async function sbFetch(path, opts={}){
+  const res = await fetch(SUPABASE_URL + path, {
+    ...opts,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+      ...opts.headers
+    }
+  });
+  return res.json();
+}
+
+async function loginUser(){
+  const email = document.getElementById('emailInp').value.trim();
+  if(!email){ alert('Email ghala!'); return; }
+
+  try {
+    const data = await sbFetch('/rest/v1/profiles?email=eq.' + encodeURIComponent(email) + '&select=id,email,is_active');
+    if(!data || data.length === 0){ alert('User saapadla nahi! Aadhi app madhe register kara.'); return; }
+    if(!data[0].is_active){ alert('Account blocked aahe!'); return; }
+
+    userId = data[0].id;
+    userEmail = data[0].email;
+    localStorage.setItem('hon_miner_user', JSON.stringify({id: userId, email: userEmail}));
+
+    showMining();
+  } catch(e) {
+    alert('Error: ' + e.message);
+  }
+}
+
+async function showMining(){
+  document.getElementById('loginCard').style.display = 'none';
+  document.getElementById('miningCard').style.display = 'block';
+  document.getElementById('userEmail').textContent = userEmail;
+  await loadBalance();
+}
+
+async function loadBalance(){
+  try {
+    const data = await sbFetch('/rest/v1/mining_sessions?user_id=eq.' + userId + '&select=blocks_mined,hon_earned');
+    if(data && data.length > 0){
+      totalBlocks = data.reduce((s,r) => s + (r.blocks_mined||0), 0);
+      miningBalance = data.reduce((s,r) => s + parseFloat(r.hon_earned||0), 0);
+      document.getElementById('blocksVal').textContent = totalBlocks;
+      document.getElementById('balVal').textContent = miningBalance.toFixed(2);
+    }
+  } catch(e) { console.error(e); }
+}
+
+async function mineBlock(){
+  try {
+    document.getElementById('statusTxt').textContent = 'Mining block...';
+    document.getElementById('statusTxt').className = 'status inf';
+
+    // Update mining session
+    const existing = await sbFetch('/rest/v1/mining_sessions?user_id=eq.' + userId + '&status=eq.active&select=id,blocks_mined,hon_earned');
+
+    if(existing && existing.length > 0){
+      const session = existing[0];
+      await sbFetch('/rest/v1/mining_sessions?id=eq.' + session.id, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          blocks_mined: (session.blocks_mined||0) + 1,
+          hon_earned: parseFloat(session.hon_earned||0) + HON_PER_BLOCK
+        })
+      });
+    } else {
+      await sbFetch('/rest/v1/mining_sessions', {
+        method: 'POST',
+        body: JSON.stringify({
+          user_id: userId,
+          blocks_mined: 1,
+          hon_earned: HON_PER_BLOCK,
+          status: 'active'
+        })
+      });
+    }
+
+    // Update wallet balance
+    const wallet = await sbFetch('/rest/v1/wallets?user_id=eq.' + userId + '&select=id,balance');
+    if(wallet && wallet.length > 0){
+      await sbFetch('/rest/v1/wallets?user_id=eq.' + userId, {
+        method: 'PATCH',
+        body: JSON.stringify({ balance: parseFloat(wallet[0].balance||0) + HON_PER_BLOCK })
+      });
+    }
+
+    sessionBlocks++;
+    totalBlocks++;
+    miningBalance += HON_PER_BLOCK;
+    document.getElementById('blocksVal').textContent = totalBlocks;
+    document.getElementById('sessionVal').textContent = sessionBlocks;
+    document.getElementById('balVal').textContent = miningBalance.toFixed(2);
+    document.getElementById('statusTxt').textContent = 'Block mined! +' + HON_PER_BLOCK + ' HON';
+    document.getElementById('statusTxt').className = 'status ok';
+    addLog('Block #' + totalBlocks + ' mined! +' + HON_PER_BLOCK + ' HON', 'ok');
+
+  } catch(e) {
+    addLog('Error: ' + e.message, 'err');
+  }
+}
+
+function toggleMining(){
+  if(miningTimer){
+    stopMining();
+  } else {
+    startMining();
+  }
+}
+
+function startMining(){
+  document.getElementById('mineBtn').textContent = '⏹ Stop Mining';
+  document.getElementById('mineBtn').className = 'mine-btn btn-mining';
+  document.getElementById('ring').style.display = 'block';
+  addLog('Mining started!', 'inf');
+  mineBlock();
+  miningTimer = setInterval(mineBlock, MINE_INTERVAL);
+}
+
+function stopMining(){
+  clearInterval(miningTimer); miningTimer = null;
+  document.getElementById('mineBtn').textContent = '⛏️ Start Mining';
+  document.getElementById('mineBtn').className = 'mine-btn btn-active';
+  document.getElementById('ring').style.display = 'none';
+  document.getElementById('statusTxt').textContent = 'Mining stopped. Balance updated!';
+  document.getElementById('statusTxt').className = 'status';
+  addLog('Mining stopped. Session: +' + (sessionBlocks * HON_PER_BLOCK) + ' HON', 'inf');
+  sessionBlocks = 0;
+}
+
+function logout(){
+  stopMining();
+  localStorage.removeItem('hon_miner_user');
+  document.getElementById('loginCard').style.display = 'block';
+  document.getElementById('miningCard').style.display = 'none';
+}
+
+// Auto login
+const saved = localStorage.getItem('hon_miner_user');
+if(saved){
+  const u = JSON.parse(saved);
+  userId = u.id; userEmail = u.email;
+  showMining();
+}
+</script>
+</body>
+</html>
