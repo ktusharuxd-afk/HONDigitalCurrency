@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HON Digital Currency</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--gold:#FFB300;--dark:#090909;--card:#111;--border:rgba(255,179,0,0.12)}
+body{font-family:'Poppins',sans-serif;background:var(--dark);color:#fff;min-height:100vh}
+.hide{display:none!important}
+/* LOGIN */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:40px 30px;text-align:center;max-width:380px;width:100%}
+.login-card .logo{font-size:3em;margin-bottom:10px}
+.login-card h1{font-size:1.5em;background:linear-gradient(135deg,#FFB300,#FF6600);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:5px}
+.login-card .sub{color:#555;font-size:0.85em;margin-bottom:25px}
+.inp{width:100%;background:#0a0a0a;border:1px solid var(--border);border-radius:10px;padding:12px 15px;color:#fff;font-family:'Poppins',sans-serif;font-size:0.9em;outline:none;margin-bottom:12px}
+.inp:focus{border-color:rgba(255,179,0,0.4)}
+.btn{width:100%;padding:14px;border-radius:50px;font-weight:600;font-size:0.95em;cursor:pointer;border:none;font-family:'Poppins',sans-serif;transition:all 0.3s}
+.btn-gold{background:linear-gradient(135deg,#FFB300,#FF8C00);color:#000}
+.btn-gold:hover{box-shadow:0 0 25px rgba(255,179,0,0.5)}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--gold);margin-top:8px}
+.btn-red{background:transparent;border:1.5px solid #f87171;color:#f87171;margin-top:8px}
+.btn-red:hover{background:rgba(248,113,113,0.1)}
+.msg{font-size:0.8em;margin-top:10px;min-height:20px}
+.msg.ok{color:#4ade80}.msg.err{color:#f87171}
+
+/* APP */
+.app-wrap{max-width:480px;margin:0 auto;padding:0 15px 80px;min-height:100vh}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:15px 0}
+.top-bar .user-info{display:flex;align-items:center;gap:10px}
+.avatar{width:35px;height:35px;background:linear-gradient(135deg,#FFB300,#FF6600);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85em;color:#000}
+.user-name{font-size:0.85em;font-weight:600}
+.user-role{font-size:0.68em;color:#555}
+.logout-btn{background:none;border:none;color:#555;font-size:0.8em;cursor:pointer;font-family:'Poppins',sans-serif}
+.logout-btn:hover{color:#f87171}
+
+/* BALANCE */
+.bal-card{background:linear-gradient(135deg,#1a1200,#0f0900);border:1px solid rgba(255,179,0,0.2);border-radius:24px;padding:30px;text-align:center;margin-bottom:20px}
+.bal-label{color:#666;font-size:0.75em;text-transform:uppercase;letter-spacing:1px}
+.bal-val{font-size:3em;font-weight:800;color:var(--gold);line-height:1.1}
+.bal-unit{color:#555;font-size:0.85em}
+
+/* ACTION BUTTONS */
+.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.act-btn{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:15px 8px;text-align:center;cursor:pointer;transition:all 0.3s;text-decoration:none;color:#fff}
+.act-btn:hover{border-color:rgba(255,179,0,0.4);transform:translateY(-3px)}
+.act-icon{font-size:1.5em;margin-bottom:5px}
+.act-lbl{font-size:0.72em;color:#888}
+
+/* SECTIONS */
+.section{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:15px}
+.section h2{font-size:0.9em;font-weight:600;margin-bottom:15px;display:flex;align-items:center;gap:8px}
+.section h2 .dot{width:6px;height:6px;background:var(--gold);border-radius:50%}
+
+/* MINING */
+.mine-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px}
+.mine-stat{background:#0a0a0a;border-radius:12px;padding:12px;text-align:center}
+.mine-stat-val{font-size:1.3em;font-weight:700;color:var(--gold)}
+.mine-stat-lbl{font-size:0.68em;color:#555;margin-top:2px}
+.mine-btn{width:100%;padding:16px;border-radius:50px;font-weight:700;font-size:1em;cursor:pointer;border:none;font-family:'Poppins',sans-serif;transition:all 0.3s}
+.mine-active{background:linear-gradient(135deg,#FFB300,#FF8C00);color:#000;box-shadow:0 0 25px rgba(255,179,0,0.4)}
+.mine-active:hover{box-shadow:0 0 40px rgba(255,179,0,0.6)}
+.mine-stop{background:#1a1a1a;color:#FFB300;border:2px solid #FFB300;animation:mpulse 1.5s infinite}
+@keyframes mpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,179,0,0.3)}50%{box-shadow:0 0 0 12px rgba(255,179,0,0)}}
+.mine-ring{width:40px;height:40px;border:3px solid rgba(255,179,0,0.1);border-top:3px solid #FFB300;border-radius:50%;animation:spin 0.8s linear infinite;margin:10px auto;display:none}
+@keyframes spin{100%{transform:rotate(360deg)}}
+.mine-status{font-size:0.8em;color:#555;text-align:center;margin:8px 0;min-height:18px}
+.mine-log{background:#0a0a0a;border-radius:8px;padding:8px;max-height:120px;overflow-y:auto;font-family:'Courier New',monospace;font-size:0.7em;margin-top:10px}
+.mlog{padding:2px 0;border-bottom:1px solid rgba(255,255,255,0.02)}
+.mlog.ok{color:#4ade80}.mlog.inf{color:#FFB300}.mlog.dim{color:#333}
+
+/* SEND FORM */
+.form-group{margin-bottom:12px}
+.form-lbl{font-size:0.75em;color:#555;margin-bottom:4px}
+
+/* TRANSACTIONS */
+.tx-list{display:flex;flex-direction:column;gap:6px;max-height:250px;overflow-y:auto}
+.tx-item{background:#0a0a0a;border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.tx-left{display:flex;align-items:center;gap:10px}
+.tx-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85em}
+.tx-icon.in{background:rgba(74,222,128,0.1);color:#4ade80}
+.tx-icon.out{background:rgba(248,113,113,0.1);color:#f87171}
+.tx-icon.mine{background:rgba(255,179,0,0.1);color:#FFB300}
+.tx-type{font-size:0.82em;font-weight:500}
+.tx-date{font-size:0.68em;color:#444}
+.tx-amt{font-weight:600;font-size:0.9em}
+.tx-amt.pos{color:#4ade80}
+.tx-amt.neg{color:#f87171}
+
+/* WITHDRAW */
+.wd-option{display:flex;gap:10px;margin-bottom:12px}
+.wd-opt{flex:1;background:#0a0a0a;border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:all 0.3s}
+.wd-opt.active{border-color:var(--gold);background:rgba(255,179,0,0.05)}
+.wd-opt-icon{font-size:1.3em;margin-bottom:4px}
+.wd-opt-lbl{font-size:0.75em;color:#888}
+
+/* ADMIN */
+.admin-tabs{display:flex;gap:8px;margin-bottom:15px;flex-wrap:wrap}
+.admin-tab{background:#0a0a0a;border:1px solid var(--border);border-radius:8px;padding:8px 15px;font-size:0.78em;cursor:pointer;color:#888;transition:all 0.3s;font-family:'Poppins',sans-serif;border:none}
+.admin-tab.active{background:rgba(255,179,0,0.1);color:var(--gold);border:1px solid rgba(255,179,0,0.3)}
+.user-item{background:#0a0a0a;border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.user-email{font-size:0.82em}
+.user-bal{color:var(--gold);font-size:0.82em;font-weight:600}
+.user-role-badge{background:rgba(255,179,0,0.1);color:var(--gold);padding:2px 8px;border-radius:20px;font-size:0.68em}
+
+/* NAV BAR */
+.nav{position:fixed;bottom:0;left:0;width:100%;background:rgba(9,9,9,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;justify-content:center;z-index:100;padding:8px 0}
+.nav-inner{display:flex;max-width:480px;width:100%;justify-content:space-around}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:5px 12px;border-radius:10px;transition:all 0.3s;text-decoration:none}
+.nav-item:hover,.nav-item.active{background:rgba(255,179,0,0.08)}
+.nav-icon{font-size:1.2em}
+.nav-lbl{font-size:0.65em;color:#555}
+.nav-item.active .nav-lbl{color:var(--gold)}
+
+/* RESPONSIVE */
+@media(max-width:400px){.actions{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="login-wrap" id="loginPage">
+  <div class="login-card">
+    <div class="logo">🪙</div>
+    <h1>HON Digital Currency</h1>
+    <p class="sub">Decentralized Digital Currency</p>
+    <input class="inp" id="loginEmail" type="email" placeholder="Enter your email">
+    <button class="btn btn-gold" onclick="login()">🚀 Login</button>
+    <p class="msg" id="loginMsg"></p>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app-wrap hide" id="appPage">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="user-info">
+      <div class="avatar" id="userAvatar">T</div>
+      <div>
+        <div class="user-name" id="userName">—</div>
+        <div class="user-role" id="userRole">—</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- BALANCE -->
+  <div class="bal-card">
+    <div class="bal-label">Total Balance</div>
+    <div class="bal-val" id="balanceVal">0.00</div>
+    <div class="bal-unit">HON</div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <div class="act-btn" onclick="showPage('mine')"><div class="act-icon">⛏️</div><div class="act-lbl">Mine</div></div>
+    <div class="act-btn" onclick="showPage('send')"><div class="act-icon">📤</div><div class="act-lbl">Send</div></div>
+    <div class="act-btn" onclick="showPage('withdraw')"><div class="act-icon">💳</div><div class="act-lbl">Withdraw</div></div>
+    <div class="act-btn" onclick="showPage('history')"><div class="act-icon">📋</div><div class="act-lbl">History</div></div>
+  </div>
+
+  <!-- PAGES -->
+
+  <!-- MINE PAGE -->
+  <div class="section" id="minePage">
+    <h2><span class="dot"></span> Mining</h2>
+    <div class="mine-stats">
+      <div class="mine-stat"><div class="mine-stat-val" id="mBlocks">0</div><div class="mine-stat-lbl">Blocks Mined</div></div>
+      <div class="mine-stat"><div class="mine-stat-val" id="mSession">0</div><div class="mine-stat-lbl">This Session</div></div>
+    </div>
+    <div class="mine-ring" id="mRing"></div>
+    <p class="mine-status" id="mStatus">Ready to mine!</p>
+    <button class="mine-btn mine-active" id="mBtn" onclick="toggleMine()">⛏️ Start Mining</button>
+    <div class="mine-log" id="mLog"><div class="mlog dim">// Mining log...</div></div>
+  </div>
+
+  <!-- SEND PAGE -->
+  <div class="section hide" id="sendPage">
+    <h2><span class="dot"></span> Send HON</h2>
+    <div class="form-group">
+      <div class="form-lbl">Receiver Email</div>
+      <input class="inp" id="sendEmail" placeholder="receiver@email.com">
+    </div>
+    <div class="form-group">
+      <div class="form-lbl">Amount (HON)</div>
+      <input class="inp" id="sendAmount" type="number" placeholder="0.00">
+    </div>
+    <button class="btn btn-gold" onclick="sendHON()">📤 Send HON</button>
+    <p class="msg" id="sendMsg"></p>
+  </div>
+
+  <!-- WITHDRAW PAGE -->
+  <div class="section hide" id="withdrawPage">
+    <h2><span class="dot"></span> Withdraw to INR</h2>
+    <p style="font-size:0.78em;color:#555;margin-bottom:12px">1 HON = 1 INR</p>
+    <div class="wd-option">
+      <div class="wd-opt active" id="wdUPI" onclick="setWdType('upi')"><div class="wd-opt-icon">📱</div><div class="wd-opt-lbl">UPI</div></div>
+      <div class="wd-opt" id="wdBank" onclick="setWdType('bank')"><div class="wd-opt-icon">🏦</div><div class="wd-opt-lbl">Bank</div></div>
+    </div>
+    <div class="form-group">
+      <div class="form-lbl">Amount (HON)</div>
+      <input class="inp" id="wdAmount" type="number" placeholder="0.00">
+    </div>
+    <div id="upiField">
+      <div class="form-group">
+        <div class="form-lbl">UPI ID</div>
+        <input class="inp" id="wdUpiId" placeholder="name@upi">
+      </div>
+    </div>
+    <div id="bankField" class="hide">
+      <div class="form-group">
+        <div class="form-lbl">Account Number</div>
+        <input class="inp" id="wdAccNo" placeholder="Account number">
+      </div>
+      <div class="form-group">
+        <div class="form-lbl">IFSC Code</div>
+        <input class="inp" id="wdIFSC" placeholder="IFSC code">
+      </div>
+    </div>
+    <button class="btn btn-gold" onclick="withdrawHON()">💳 Withdraw</button>
+    <p class="msg" id="wdMsg"></p>
+  </div>
+
+  <!-- HISTORY PAGE -->
+  <div class="section hide" id="historyPage">
+    <h2><span class="dot"></span> Transaction History</h2>
+    <div class="tx-list" id="txList">
+      <p style="color:#333;text-align:center;font-size:0.82em">Loading...</p>
+    </div>
+  </div>
+
+  <!-- ADMIN PAGE -->
+  <div class="section hide" id="adminPage">
+    <h2><span class="dot"></span> Admin Panel</h2>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="showAdminTab('users')">Users</button>
+      <button class="admin-tab" onclick="showAdminTab('mint')">Mint</button>
+      <button class="admin-tab" onclick="showAdminTab('withdrawals')">Withdrawals</button>
+    </div>
+    <div id="adminUsers"></div>
+    <div id="adminMint" class="hide">
+      <div class="form-group">
+        <div class="form-lbl">User Email</div>
+        <input class="inp" id="mintEmail" placeholder="user@email.com">
+      </div>
+      <div class="form-group">
+        <div class="form-lbl">Amount (HON)</div>
+        <input class="inp" id="mintAmount" type="number" placeholder="0">
+      </div>
+      <button class="btn btn-gold" onclick="mintHON()">🪙 Mint HON</button>
+      <p class="msg" id="mintMsg"></p>
+    </div>
+    <div id="adminWithdrawals" class="hide"></div>
+  </div>
+</div>
+
+<!-- NAV BAR -->
+<div class="nav hide" id="navBar">
+  <div class="nav-inner">
+    <div class="nav-item active" onclick="showPage('mine')"><span class="nav-icon">🏠</span><span class="nav-lbl">Home</span></div>
+    <div class="nav-item" onclick="showPage('send')"><span class="nav-icon">📤</span><span class="nav-lbl">Send</span></div>
+    <div class="nav-item" onclick="showPage('mine')"><span class="nav-icon">⛏️</span><span class="nav-lbl">Mine</span></div>
+    <div class="nav-item" onclick="showPage('history')"><span class="nav-icon">📋</span><span class="nav-lbl">History</span></div>
+    <div class="nav-item" onclick="showPage('profile')"><span class="nav-icon">👤</span><span class="nav-lbl">Profile</span></div>
+  </div>
+</div>
+
+<script>
+const API = 'https://hon-secure-server.onrender.com/api';
+let token = null;
+let user = null;
+let mineTimer = null;
+let sessionMined = 0;
+let totalMined = 0;
+let wdType = 'upi';
+
+// API Call
+async function api(path, method='GET', body=null) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if(token) opts.headers['Authorization'] = 'Bearer ' + token;
+  if(body) opts.body = JSON.stringify(body);
+  const res = await fetch(API + path, opts);
+  return res.json();
+}
+
+// LOGIN
+async function login() {
+  const email = document.getElementById('loginEmail').value.trim();
+  if(!email) return showMsg('loginMsg', 'Email ghala!', 'err');
+  showMsg('loginMsg', 'Logging in...', 'inf');
+  const data = await api('/login', 'POST', { email });
+  if(data.error) return showMsg('loginMsg', data.error, 'err');
+  token = data.token;
+  user = data.user;
+  localStorage.setItem('hon_token', token);
+  localStorage.setItem('hon_user', JSON.stringify(user));
+  showApp();
+}
+
+function logout() {
+  if(mineTimer) toggleMine();
+  token = null; user = null;
+  localStorage.removeItem('hon_token');
+  localStorage.removeItem('hon_user');
+  document.getElementById('loginPage').classList.remove('hide');
+  document.getElementById('appPage').classList.add('hide');
+  document.getElementById('navBar').classList.add('hide');
+}
+
+async function showApp() {
+  document.getElementById('loginPage').classList.add('hide');
+  document.getElementById('appPage').classList.remove('hide');
+  document.getElementById('navBar').classList.remove('hide');
+  document.getElementById('userName').textContent = user.email.split('@')[0];
+  document.getElementById('userRole').textContent = user.role;
+  document.getElementById('userAvatar').textContent = user.email[0].toUpperCase();
+  if(['admin','owner'].includes(user.role)) {
+    document.querySelector('.actions').innerHTML += '<div class="act-btn" onclick="showPage(\'admin\')"><div class="act-icon">👑</div><div class="act-lbl">Admin</div></div>';
+  }
+  await loadBalance();
+  showPage('mine');
+}
+
+async function loadBalance() {
+  const data = await api('/balance');
+  document.getElementById('balanceVal').textContent = parseFloat(data.balance || 0).toFixed(2);
+}
+
+// PAGES
+function showPage(page) {
+  ['minePage','sendPage','withdrawPage','historyPage','adminPage'].forEach(p => document.getElementById(p).classList.add('hide'));
+  if(page === 'mine') document.getElementById('minePage').classList.remove('hide');
+  if(page === 'send') document.getElementById('sendPage').classList.remove('hide');
+  if(page === 'withdraw') document.getElementById('withdrawPage').classList.remove('hide');
+  if(page === 'history') { document.getElementById('historyPage').classList.remove('hide'); loadHistory(); }
+  if(page === 'admin') { document.getElementById('adminPage').classList.remove('hide'); loadAdminUsers(); }
+  if(page === 'profile') logout();
+}
+
+// MINING
+function toggleMine() {
+  if(mineTimer) { stopMine(); } else { startMine(); }
+}
+
+function startMine() {
+  document.getElementById('mBtn').textContent = '⏹ Stop Mining';
+  document.getElementById('mBtn').className = 'mine-btn mine-stop';
+  document.getElementById('mRing').style.display = 'block';
+  addMineLog('Mining started!', 'inf');
+  mineOne();
+  mineTimer = setInterval(mineOne, 10000);
+}
+
+function stopMine() {
+  clearInterval(mineTimer); mineTimer = null;
+  document.getElementById('mBtn').textContent = '⛏️ Start Mining';
+  document.getElementById('mBtn').className = 'mine-btn mine-active';
+  document.getElementById('mRing').style.display = 'none';
+  document.getElementById('mStatus').textContent = 'Mining stopped.';
+  addMineLog('Stopped. Session: +' + sessionMined + ' HON', 'inf');
+  sessionMined = 0;
+}
+
+async function mineOne() {
+  document.getElementById('mStatus').textContent = 'Mining block...';
+  const data = await api('/mine', 'POST');
+  if(data.success) {
+    sessionMined++;
+    totalMined++;
+    document.getElementById('mSession').textContent = sessionMined;
+    document.getElementById('mBlocks').textContent = totalMined;
+    document.getElementById('balanceVal').textContent = parseFloat(data.balance).toFixed(2);
+    document.getElementById('mStatus').textContent = 'Block mined! +1 HON';
+    addMineLog('Block #' + totalMined + ' mined! +1 HON', 'ok');
+  } else {
+    addMineLog('Error: ' + (data.error || 'unknown'), 'err');
+  }
+}
+
+function addMineLog(msg, type) {
+  const b = document.getElementById('mLog');
+  const d = document.createElement('div');
+  d.className = 'mlog ' + type;
+  d.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+  b.insertBefore(d, b.firstChild);
+  if(b.children.length > 30) b.removeChild(b.lastChild);
+}
+
+// SEND
+async function sendHON() {
+  const email = document.getElementById('sendEmail').value.trim();
+  const amount = parseFloat(document.getElementById('sendAmount').value);
+  if(!email || !amount) return showMsg('sendMsg', 'Fill all fields!', 'err');
+  showMsg('sendMsg', 'Sending...', 'inf');
+  const data = await api('/send', 'POST', { receiver_email: email, amount });
+  if(data.success) {
+    showMsg('sendMsg', 'Sent ' + amount + ' HON!', 'ok');
+    document.getElementById('sendEmail').value = '';
+    document.getElementById('sendAmount').value = '';
+    await loadBalance();
+  } else {
+    showMsg('sendMsg', data.error, 'err');
+  }
+}
+
+// WITHDRAW
+function setWdType(type) {
+  wdType = type;
+  document.getElementById('wdUPI').className = 'wd-opt' + (type === 'upi' ? ' active' : '');
+  document.getElementById('wdBank').className = 'wd-opt' + (type === 'bank' ? ' active' : '');
+  document.getElementById('upiField').classList.toggle('hide', type !== 'upi');
+  document.getElementById('bankField').classList.toggle('hide', type !== 'bank');
+}
+
+async function withdrawHON() {
+  const amount = parseFloat(document.getElementById('wdAmount').value);
+  if(!amount) return showMsg('wdMsg', 'Enter amount!', 'err');
+  const body = { amount };
+  if(wdType === 'upi') body.upi_id = document.getElementById('wdUpiId').value;
+  else body.bank_details = document.getElementById('wdAccNo').value + '|' + document.getElementById('wdIFSC').value;
+  showMsg('wdMsg', 'Submitting...', 'inf');
+  const data = await api('/withdraw', 'POST', body);
+  if(data.success) {
+    showMsg('wdMsg', 'Withdrawal request submitted!', 'ok');
+    document.getElementById('wdAmount').value = '';
+  } else {
+    showMsg('wdMsg', data.error, 'err');
+  }
+}
+
+// HISTORY
+async function loadHistory() {
+  const data = await api('/transactions');
+  const el = document.getElementById('txList');
+  if(!data || data.length === 0) { el.innerHTML = '<p style="color:#333;text-align:center;font-size:0.82em">No transactions yet</p>'; return; }
+  el.innerHTML = data.map(tx => {
+    const isMine = tx.type === 'mining';
+    const isSent = tx.sender_id === user.id && !isMine;
+    const icon = isMine ? 'mine' : (isSent ? 'out' : 'in');
+    const iconTxt = isMine ? '⛏️' : (isSent ? '↑' : '↓');
+    const label = isMine ? 'Mining Reward' : (isSent ? 'Sent' : 'Received');
+    const amtClass = isSent ? 'neg' : 'pos';
+    const amtSign = isSent ? '-' : '+';
+    const date = new Date(tx.created_at).toLocaleDateString();
+    return `<div class="tx-item">
+      <div class="tx-left"><div class="tx-icon ${icon}">${iconTxt}</div><div><div class="tx-type">${label}</div><div class="tx-date">${date}</div></div></div>
+      <div class="tx-amt ${amtClass}">${amtSign}${tx.amount} HON</div>
+    </div>`;
+  }).join('');
+}
+
+// ADMIN
+async function loadAdminUsers() {
+  const data = await api('/admin/users');
+  const el = document.getElementById('adminUsers');
+  if(!data || data.length === 0) { el.innerHTML = '<p style="color:#333;font-size:0.82em">No users</p>'; return; }
+  el.innerHTML = data.map(u => `<div class="user-item">
+    <div><div class="user-email">${u.email}</div><span class="user-role-badge">${u.role}</span></div>
+    <div class="user-bal">${u.wallets?.[0]?.balance || 0} HON</div>
+  </div>`).join('');
+}
+
+function showAdminTab(tab) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('adminUsers').classList.toggle('hide', tab !== 'users');
+  document.getElementById('adminMint').classList.toggle('hide', tab !== 'mint');
+  document.getElementById('adminWithdrawals').classList.toggle('hide', tab !== 'withdrawals');
+  if(tab === 'users') loadAdminUsers();
+  if(tab === 'withdrawals') loadAdminWithdrawals();
+}
+
+async function mintHON() {
+  const email = document.getElementById('mintEmail').value.trim();
+  const amount = parseFloat(document.getElementById('mintAmount').value);
+  if(!email || !amount) return showMsg('mintMsg', 'Fill all fields!', 'err');
+  const users = await api('/admin/users');
+  const target = users.find(u => u.email === email);
+  if(!target) return showMsg('mintMsg', 'User not found!', 'err');
+  const data = await api('/admin/mint', 'POST', { user_id: target.id, amount });
+  if(data.success) showMsg('mintMsg', 'Minted ' + amount + ' HON!', 'ok');
+  else showMsg('mintMsg', data.error, 'err');
+}
+
+async function loadAdminWithdrawals() {
+  const data = await api('/admin/withdrawals');
+  const el = document.getElementById('adminWithdrawals');
+  if(!data || data.length === 0) { el.innerHTML = '<p style="color:#333;font-size:0.82em">No withdrawals</p>'; return; }
+  el.innerHTML = data.map(w => `<div class="user-item">
+    <div><div class="user-email">${w.profiles?.email || '—'}</div><div style="font-size:0.7em;color:#555">${w.upi_id || 'Bank'} | ${w.status}</div></div>
+    <div class="user-bal">${w.amount} HON</div>
+  </div>`).join('');
+}
+
+function showMsg(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'msg ' + (type || '');
+}
+
+// AUTO LOGIN
+const savedToken = localStorage.getItem('hon_token');
+const savedUser = localStorage.getItem('hon_user');
+if(savedToken && savedUser) {
+  token = savedToken;
+  user = JSON.parse(savedUser);
+  showApp();
+}
+</script>
+</body>
+</html>
