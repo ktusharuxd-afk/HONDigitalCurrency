@@ -158,9 +158,9 @@ body{font-family:'Poppins',sans-serif;background:var(--dark);color:#fff;min-heig
   <!-- ACTIONS -->
   <div class="actions">
     <div class="act-btn" onclick="showPage('mine')"><div class="act-icon">⛏️</div><div class="act-lbl">Mine</div></div>
-    <div class="act-btn" onclick="showPage('send')"><div class="act-icon">📤</div><div class="act-lbl">Send</div></div>
-    <div class="act-btn" onclick="showPage('withdraw')"><div class="act-icon">💳</div><div class="act-lbl">Withdraw</div></div>
-    <div class="act-btn" onclick="showPage('history')"><div class="act-icon">📋</div><div class="act-lbl">History</div></div>
+    <div class="act-btn" onclick="showPage('send')"><div class="act-icon"><img src="send-icon.svg" width="28"></div><div class="act-lbl">Send</div></div>
+    <div class="act-btn" onclick="showPage('withdraw')"><div class="act-icon"><img src="withdraw-icon.svg" width="28"></div><div class="act-lbl">Withdraw</div></div>
+    <div class="act-btn" onclick="showPage('history')"><div class="act-icon"><img src="history-icon.svg" width="28"></div><div class="act-lbl">History</div></div>
   </div>
 
   <!-- PAGES -->
@@ -261,11 +261,11 @@ body{font-family:'Poppins',sans-serif;background:var(--dark);color:#fff;min-heig
 <!-- NAV BAR -->
 <div class="nav hide" id="navBar">
   <div class="nav-inner">
-    <div class="nav-item active" onclick="showPage('mine')"><span class="nav-icon">🏠</span><span class="nav-lbl">Home</span></div>
-    <div class="nav-item" onclick="showPage('send')"><span class="nav-icon">📤</span><span class="nav-lbl">Send</span></div>
+    <div class="nav-item active" onclick="showPage('mine')"><span class="nav-icon"><img src="home-icon.svg" width="22"></span><span class="nav-lbl">Home</span></div>
+    <div class="nav-item" onclick="showPage('send')"><span class="nav-icon"><img src="send-icon.svg" width="22"></span><span class="nav-lbl">Send</span></div>
     <div class="nav-item" onclick="showPage('mine')"><span class="nav-icon">⛏️</span><span class="nav-lbl">Mine</span></div>
-    <div class="nav-item" onclick="showPage('history')"><span class="nav-icon">📋</span><span class="nav-lbl">History</span></div>
-    <div class="nav-item" onclick="showPage('profile')"><span class="nav-icon">👤</span><span class="nav-lbl">Profile</span></div>
+    <div class="nav-item" onclick="showPage('history')"><span class="nav-icon"><img src="history-icon.svg" width="22"></span><span class="nav-lbl">History</span></div>
+    <div class="nav-item" onclick="showPage('profile')"><span class="nav-icon"><img src="profile-icon.svg" width="22"></span><span class="nav-lbl">Profile</span></div>
   </div>
 </div>
 
@@ -319,7 +319,7 @@ async function showApp() {
   document.getElementById('userRole').textContent = user.role;
   document.getElementById('userAvatar').textContent = user.email[0].toUpperCase();
   if(['admin','owner'].includes(user.role)) {
-    document.querySelector('.actions').innerHTML += '<div class="act-btn" onclick="showPage(\'admin\')"><div class="act-icon">👑</div><div class="act-lbl">Admin</div></div>';
+    document.querySelector('.actions').innerHTML += '<div class="act-btn" onclick="showPage(\'admin\')"><div class="act-icon"><img src="admin-icon.svg" width="28"></div><div class="act-lbl">Admin</div></div>';
   }
   await loadBalance();
   showPage('mine');
