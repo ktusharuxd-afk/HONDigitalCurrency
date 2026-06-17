@@ -441,9 +441,9 @@ else showMsg('mintMsg',data.error,'err');
 async function loadAdminWithdrawals(){
 const data=await api('/admin/withdrawals');const el=document.getElementById('adminWithdrawals');
 if(!data||data.length===0){el.innerHTML='<p style="color:var(--muted);font-size:0.85em">No withdrawals</p>';return}
-el.innerHTML=data.map(w=>`<div class="user-item"><div><div class="user-email">${w.profiles?.email||'—'}</div><div style="font-size:0.72em;color:var(--muted)">${w.upi_id||'Bank'} • ${w.status}</div></div><div class="user-bal">${w.amount} HON</div></div>`).join('');
+el.innerHTML=data.map(w=>`<div class="user-item" style="flex-direction:column;align-items:flex-start;gap:8px"> <div style="display:flex;justify-content:space-between;width:100%"> <div><div class="user-email">${w.profiles?.email||'—'}</div> <div style="font-size:0.72em;color:var(--muted)">${w.upi_id||w.bank_details||'—'} • <span style="color:${w.status==='pending'?'#FFB300':w.status==='approved'?'#16a34a':'#dc2626'}">${w.status}</span></div></div> <div class="user-bal">${w.amount} HON</div></div> ${w.status==='pending'?`<div style="display:flex;gap:8px;width:100%"> <button onclick="updateWithdrawal('${w.id}','approved')" style="flex:1;padding:8px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.78em;cursor:pointer;font-weight:600">✅ Approve</button> <button onclick="updateWithdrawal('${w.id}','rejected')" style="flex:1;padding:8px;background:#dc2626;color:#fff;border:none;border-radius:8px;font-family:'Poppins',sans-serif;font-size:0.78em;cursor:pointer;font-weight:600">❌ Reject</button> </div>`:''} </div>`).join('');
 }
-function showMsg(id,msg,type){const el=document.getElementById(id);el.textContent=msg;el.className='msg '+(type||'')}
+async function updateWithdrawal(id,status){ const data=await api('/admin/withdrawal/update','POST',{id,status}); if(data.success){alert('Withdrawal '+status+'!');loadAdminWithdrawals();} else alert('Error: '+data.error); } function showMsg(id,msg,type){const el=document.getElementById(id);el.textContent=msg;el.className='msg '+(type||'')}
 
 const savedToken=localStorage.getItem('hon_token');
 const savedUser=localStorage.getItem('hon_user');
