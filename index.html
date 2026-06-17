@@ -110,15 +110,19 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
 .user-role-badge{background:rgba(255,179,0,0.1);color:var(--gold);padding:2px 10px;border-radius:20px;font-size:0.7em;font-weight:500;margin-left:8px}
 
 /* NAV BAR */
-.nav{position:fixed;bottom:0;left:0;width:100%;background:#111;display:flex;justify-content:center;z-index:100;padding:8px 0;box-shadow:0 -2px 20px rgba(0,0,0,0.1)}
-.nav-inner{display:flex;max-width:480px;width:100%;justify-content:space-around}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 14px;border-radius:12px;transition:all 0.3s;text-decoration:none}
-.nav-item:hover,.nav-item.active{background:rgba(255,179,0,0.1)}
+.nav{position:fixed;bottom:0;left:0;width:100%;background:#131417;display:flex;justify-content:center;z-index:100;padding:10px 0 0;box-shadow:0 -4px 30px rgba(0,0,0,0.3)}
+.nav-inner{display:flex;max-width:480px;width:100%;justify-content:space-around;align-items:flex-end;position:relative}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:8px 14px;transition:all 0.3s;text-decoration:none}
 .nav-icon{height:22px;display:flex;align-items:center;justify-content:center}
-.nav-icon img{width:22px;height:22px;filter:brightness(0) invert(0.6)}
+.nav-icon img{width:22px;height:22px;filter:brightness(0) invert(0.7)}
 .nav-item.active .nav-icon img{filter:brightness(1) invert(0) sepia(1) saturate(5) hue-rotate(15deg)}
-.nav-lbl{font-size:0.65em;color:#666}
-.nav-item.active .nav-lbl{color:var(--gold)}
+.nav-lbl{font-size:0.62em;color:#BCBCBC;font-weight:500}
+.nav-item.active .nav-lbl{color:#FFB300}
+.nav-fab{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;text-decoration:none;margin-top:-28px;transition:all 0.3s}
+.fab-circle{width:56px;height:56px;background:linear-gradient(135deg,#FFB300,#FF8C00);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5em;box-shadow:0 4px 20px rgba(255,179,0,0.5);transition:all 0.3s;border:4px solid #131417}
+.fab-circle:hover{box-shadow:0 6px 30px rgba(255,179,0,0.7);transform:scale(1.05)}
+.nav-fab .nav-lbl{color:#FFB300;font-weight:600}
+.nav-pill{width:40px;height:4px;background:#fff;border-radius:4px;margin:8px auto 0;opacity:0.3}
 
 /* RESPONSIVE */
 @media(max-width:400px){.actions{grid-template-columns:repeat(2,1fr)}}
@@ -263,10 +267,11 @@ body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);min
   <div class="nav-inner">
     <div class="nav-item active" onclick="showPage('mine')"><span class="nav-icon"><img src="home-icon.svg"></span><span class="nav-lbl">Home</span></div>
     <div class="nav-item" onclick="showPage('send')"><span class="nav-icon"><img src="send-icon.svg"></span><span class="nav-lbl">Send</span></div>
-    <div class="nav-item" onclick="showPage('mine')"><span class="nav-icon">⛏️</span><span class="nav-lbl">Mine</span></div>
+    <div class="nav-fab" onclick="showPage('mine')"><div class="fab-circle">⛏️</div><span class="nav-lbl">Mine</span></div>
     <div class="nav-item" onclick="showPage('history')"><span class="nav-icon"><img src="history-icon.svg"></span><span class="nav-lbl">History</span></div>
     <div class="nav-item" onclick="showPage('profile')"><span class="nav-icon"><img src="profile-icon.svg"></span><span class="nav-lbl">Profile</span></div>
   </div>
+  <div class="nav-pill"></div>
 </div>
 
 <script>
